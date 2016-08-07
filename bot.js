@@ -1,5 +1,4 @@
 var HTTPS = require('https');
-var cool = require('cool-ascii-faces');
 var _ = require('lodash');
 var Twitter = require('twitter');
 var async = require('async');
