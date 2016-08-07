@@ -11,8 +11,8 @@ var client = new Twitter({
     access_token_key: process.env.TWITTER_ACCESS_TOKEN_KEY,
     access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET
 });
-
-var blacklist = ['2462451'];
+//['sammy g']
+var blacklist = [{id:'2462451', infractions:['Posting phone real phone numbers']}]
 
 function respond() {
     var request = JSON.parse(this.req.chunks[0]),
@@ -35,9 +35,15 @@ function postMessage(request) {
     message = request.text;
     sender = request.sender_id;
     _.forEach(blacklist, function (item) {
-        if(item == sender){
+        if(item.id == sender){
             console.log("Tweet bloked for " + request.name);
             botResponse = "You have been blocked " + request.name;
+            if(!_.isEmpty(item.infractions)){
+                botResponse += "\n Blocked for:";
+            }
+            _.forEach(item.infractions, function (infraction) {
+                botResponse += "\n - " + infraction;
+            });
             isBlockedUser = true;
         }
     });
