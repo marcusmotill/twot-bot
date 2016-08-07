@@ -12,7 +12,7 @@ var client = new Twitter({
     access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET
 });
 //['sammy g']
-var blacklist = [{id:'2462451', infractions:['Posting phone real phone numbers']}]
+var blacklist = [{id:'2462451', infractions:['Posting real phone numbers']}]
 
 function respond() {
     var request = JSON.parse(this.req.chunks[0]),
