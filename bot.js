@@ -47,7 +47,7 @@ function postMessage(message) {
                     cb(botResponse);
                     return;
                 } else {
-                    message = test.split('/twot');
+                    message = message.split('/twot');
                     message = _.get(message, '1', undefined);
 
                     if (message) {
