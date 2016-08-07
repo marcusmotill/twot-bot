@@ -17,7 +17,7 @@ var blacklist = ['2462451'];
 function respond() {
     var request = JSON.parse(this.req.chunks[0]),
         botRegex = /^\/twot*/;
-    console.log(request);
+    
     if (request.text && botRegex.test(request.text)) {
         this.res.writeHead(200);
         postMessage(request);
@@ -36,6 +36,7 @@ function postMessage(request) {
     sender = request.sender_id;
     _.forEach(blacklist, function (item) {
         if(item == sender){
+            console.log("Tweet bloked for " + request.name);
             botResponse = "You have been blocked " + request.name;
             isBlockedUser = true;
         }
