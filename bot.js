@@ -12,14 +12,15 @@ var client = new Twitter({
     access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET
 });
 
+var blacklist = ['2462451'];
+
 function respond() {
     var request = JSON.parse(this.req.chunks[0]),
         botRegex = /^\/twot*/;
     console.log(request);
     if (request.text && botRegex.test(request.text)) {
-
         this.res.writeHead(200);
-        postMessage(request.text);
+        postMessage(request);
         this.res.end();
     } else {
         console.log("don't care");
@@ -28,8 +29,17 @@ function respond() {
     }
 }
 
-function postMessage(message) {
-    var botResponse, options, body, botReq;
+function postMessage(request) {
+    var botResponse, options, body, botReq, message, sender, isBlockedUser;
+    
+    message = request.text;
+    sender = request.sender_id;
+    _.forEach(blacklist, function (item) {
+        if(item == sender){
+            botResponse = "You have been blocked " + request.name;
+            isBlockedUser = true;
+        }
+    });
 
     options = {
         hostname: 'api.groupme.com',
@@ -43,6 +53,10 @@ function postMessage(message) {
 
     async.series([
             function(cb) {
+                if(isBlockedUser){
+                    cb();
+                    return;
+                }
                 if (!message) {
                     botResponse = "Error message not must be defined";
                     cb(botResponse);
@@ -62,6 +76,10 @@ function postMessage(message) {
                 cb();
             },
             function(cb) {
+                if(isBlockedUser){
+                    cb();
+                    return;
+                }
                 client.post('statuses/update', {
                     status: message
                 }, function(error, tweet, response) {
