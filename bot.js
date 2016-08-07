@@ -15,8 +15,9 @@ var client = new Twitter({
 function respond() {
     var request = JSON.parse(this.req.chunks[0]),
         botRegex = /^\/twot*/;
-
+    console.log(request);
     if (request.text && botRegex.test(request.text)) {
+
         this.res.writeHead(200);
         postMessage(request.text);
         this.res.end();
@@ -76,7 +77,7 @@ function postMessage(message) {
             },
             function(cb) {
                 _.set(body, 'text', botResponse);
-                
+
                 cb();
             }
         ],
