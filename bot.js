@@ -12,12 +12,15 @@ var client = new Twitter({
     access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET
 });
 //['sammy g']
-var blacklist = [{id:'2462451', infractions:['Posting real phone numbers']}]
+var blacklist = [{
+    id: '2462451',
+    infractions: ['Posting real phone numbers']
+}]
 
 function respond() {
     var request = JSON.parse(this.req.chunks[0]),
         botRegex = /^\/twot*/;
-    
+
     if (request.text && botRegex.test(request.text)) {
         this.res.writeHead(200);
         postMessage(request);
@@ -31,17 +34,17 @@ function respond() {
 
 function postMessage(request) {
     var botResponse, options, body, botReq, message, sender, isBlockedUser;
-    
+
     message = request.text;
     sender = request.sender_id;
-    _.forEach(blacklist, function (item) {
-        if(item.id == sender){
+    _.forEach(blacklist, function(item) {
+        if (item.id == sender) {
             console.log("Tweet bloked for " + request.name);
             botResponse = "You have been blocked " + request.name;
-            if(!_.isEmpty(item.infractions)){
+            if (!_.isEmpty(item.infractions)) {
                 botResponse += "\n Blocked for:";
             }
-            _.forEach(item.infractions, function (infraction) {
+            _.forEach(item.infractions, function(infraction) {
                 botResponse += "\n - " + infraction;
             });
             isBlockedUser = true;
@@ -60,12 +63,16 @@ function postMessage(request) {
 
     async.series([
             function(cb) {
-                if(isBlockedUser){
+                if (isBlockedUser) {
                     cb();
                     return;
                 }
                 if (!message) {
                     botResponse = "Error message not must be defined";
+                    cb(botResponse);
+                    return;
+                } else if (message.length >= 140) {
+                    botResponse = "That message was " + message.length + "learn how to f****** count.";
                     cb(botResponse);
                     return;
                 } else {
@@ -83,7 +90,7 @@ function postMessage(request) {
                 cb();
             },
             function(cb) {
-                if(isBlockedUser){
+                if (isBlockedUser) {
                     cb();
                     return;
                 }
