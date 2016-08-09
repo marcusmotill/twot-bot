@@ -14,8 +14,9 @@ var client = new Twitter({
 //['sammy g']
 var blacklist = [{
     id: '2462451',
-    infractions: ['Posting real phone numbers']
-}]
+    infractions: ['Posting real phone numbers'],
+    strikes: 1
+}];
 
 function respond() {
     var request = JSON.parse(this.req.chunks[0]),
@@ -38,7 +39,7 @@ function postMessage(request) {
     message = request.text;
     sender = request.sender_id;
     _.forEach(blacklist, function(item) {
-        if (item.id == sender) {
+        if (item.id == sender && item.strikes >= 3) {
             console.log("Tweet bloked for " + request.name);
             botResponse = "You have been blocked " + request.name;
             if (!_.isEmpty(item.infractions)) {
